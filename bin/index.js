@@ -22,6 +22,14 @@ module.exports = {
 			})
 		}
 
+		const checkDir = async () => {
+			if (!fs.existsSync("./models")){
+				return fs.mkdirSync("./models");
+			}else{
+				return true
+			}
+		}
+
 		const getRelationsFromTable = async (dbName,tableName) => {
 			connection.query(`
 				SELECT
@@ -42,7 +50,7 @@ module.exports = {
 						return result
 			});
 		}
-
+		await checkDir();
 		let result = await getAllFields()
 	
 		result.forEach(element => {
