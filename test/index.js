@@ -1,5 +1,5 @@
-const models = require("../index").models();
 const main = async () => {
+	const models = require("../index").models();
 	let r = await models.app_users.select().where("first_name","=","Jaime").or("last_name","=","").orderBy("last_name","ASC").get()
 	console.log(r)
 	r.forEach(appUser=>{
@@ -11,4 +11,7 @@ const main = async () => {
 	})
 }
 
+buildModels = require("../index").buildModels
+
 main();
+//buildModels();
