@@ -11,6 +11,7 @@ const types = {
 module.exports = {
 	buildModels: async (connection,dbName) => {
 		let countTables = 0
+		console.log(__dirname)
 		const getAllFields = () => {
 			return new Promise(resolve => {
 				connection.query('SELECT * FROM information_schema.columns WHERE table_schema =  ? ',dbName , (err, result) => {
@@ -23,8 +24,8 @@ module.exports = {
 		}
 
 		const checkDir = async () => {
-			if (!fs.existsSync("./models")){
-				return fs.mkdirSync("./models");
+			if (!fs.existsSync(__dirname+"/../models")){
+				return fs.mkdirSync(__dirname+"/../models");
 			}else{
 				return true
 			}
@@ -235,7 +236,7 @@ module.exports = (connection) => {
 
 }
 			`;
-			fs.writeFile('./models/'+item+'.js', fileContent, function (err) {
+			fs.writeFile(__dirname+'/../models/'+item+'.js', fileContent, function (err) {
 				if (err) return console.log(err);
 				countTables ++
 				console.log('Created '+item+ ' model successfull.');
@@ -252,7 +253,7 @@ ${forIndex}
 	}
 }
 		`
-		fs.writeFile('./models/index.js', indexjs, function (err) {
+		fs.writeFile(__dirname+'/../models/index.js', indexjs, function (err) {
 			if (err) return console.log(err);
 			console.log('Hello World > helloworld.txt');
 			if(countTables == result.length){
