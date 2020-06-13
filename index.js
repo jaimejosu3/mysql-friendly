@@ -21,4 +21,20 @@ connection.connect(function(err) {
 	console.log('MySQL Connected as id ' + connection.threadId);
 });
 
-module.exports = require("./models")(connection);
+const checkModels = () => {
+	try{
+		return require("./models")(connection)
+	}catch(e){
+		console.log("Please buildModels first")
+		process.exit(1)
+	}
+}
+
+const buildModels = () => {
+	return require("./bin").buildModels(connection,process.env.DB_NAME)
+}
+
+module.exports = {
+	buildModels: buildModels,
+	models: checkModels
+};

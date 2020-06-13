@@ -10,6 +10,7 @@ const types = {
 }
 module.exports = {
 	buildModels: async (connection,dbName) => {
+		let countTables = 0
 		const getAllFields = () => {
 			return new Promise(resolve => {
 				connection.query('SELECT * FROM information_schema.columns WHERE table_schema =  ? ',dbName , (err, result) => {
@@ -228,7 +229,11 @@ module.exports = (connection) => {
 			`;
 			fs.writeFile('./models/'+item+'.js', fileContent, function (err) {
 				if (err) return console.log(err);
-				console.log('Hello World > helloworld.txt');
+				countTables ++
+				console.log('Created '+item+ ' model successfull.');
+				if(countTables == result.length){
+					return "SUCCESS"
+				}
 			});
 		});
 
@@ -242,10 +247,10 @@ ${forIndex}
 		fs.writeFile('./models/index.js', indexjs, function (err) {
 			if (err) return console.log(err);
 			console.log('Hello World > helloworld.txt');
+			if(countTables == result.length){
+				return "SUCCESS"
+			}
 		});
-
-
-		console.log(tables);
 
 	}
 }
