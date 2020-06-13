@@ -18,7 +18,7 @@ connection.connect(function(err) {
 		//require("./bin").buildModels(connection,process.env.DB_NAME)
 	}
  
-	console.log('MySQL Connected as id ' + connection.threadId);
+	//console.log('MySQL Connected as id ' + connection.threadId);
 });
 
 const checkModels = () => {

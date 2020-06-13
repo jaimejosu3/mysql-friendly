@@ -1,4 +1,6 @@
 const fs = require('fs');
+const ProgressBar = require("./bar");
+
 const tables = {}
 const types = {
 	int: "Number",
@@ -8,10 +10,18 @@ const types = {
 	datetime: "Date",
 	tinyint: "Boolean"
 }
+
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
+
 module.exports = {
 	buildModels: async (connection,dbName) => {
+		const Bar = new ProgressBar();
 		let countTables = 0
-		console.log(__dirname)
+		let indexCreated = false;
 		const getAllFields = () => {
 			return new Promise(resolve => {
 				connection.query('SELECT * FROM information_schema.columns WHERE table_schema =  ? ',dbName , (err, result) => {
@@ -62,8 +72,8 @@ module.exports = {
 			}
 		});
 		let forIndex = ''
-
-		Object.keys(tables).forEach(function (item) {
+		Bar.init(Object.keys(tables).length);
+		await asyncForEach(Object.keys(tables),async (item) => {
 			let paramsConstructor = ''
 			let fields = ''
 			let enumFields = ""
@@ -239,10 +249,13 @@ module.exports = (connection) => {
 			fs.writeFile(__dirname+'/../models/'+item+'.js', fileContent, function (err) {
 				if (err) return console.log(err);
 				countTables ++
-				console.log('Created '+item+ ' model successfull.');
-				if(countTables == result.length){
-					return "SUCCESS"
+				//console.log('Created '+item+ ' model successfull.',countTables, Object.keys(tables).length, indexCreated);
+				if(countTables == Object.keys(tables).length && indexCreated){
+					Bar.update(countTables);
+					console.log("Models created, import module and use your models.")
+					process.exit(1)
 				}
+				return true;
 			});
 		});
 
@@ -255,9 +268,10 @@ ${forIndex}
 		`
 		fs.writeFile(__dirname+'/../models/index.js', indexjs, function (err) {
 			if (err) return console.log(err);
-			console.log('Hello World > helloworld.txt');
-			if(countTables == result.length){
-				return "SUCCESS"
+			indexCreated = true;
+			if(countTables == Object.keys(tables).length){
+				console.log("Models created, import module and use your models.")
+				process.exit(1);
 			}
 		});
 
