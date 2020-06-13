@@ -15,7 +15,7 @@ connection.connect(function(err) {
 	}
 
 	if(process.env.BUILD_MYSQL){
-		require("./bin").buildModels(connection,process.env.DB_NAME)
+		//require("./bin").buildModels(connection,process.env.DB_NAME)
 	}
  
 	console.log('MySQL Connected as id ' + connection.threadId);

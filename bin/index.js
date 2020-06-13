@@ -56,6 +56,7 @@ module.exports = {
 		Object.keys(tables).forEach(function (item) {
 			let paramsConstructor = ''
 			let fields = ''
+			let enumFields = ""
 			let paramsConstructorFunction = ''
 			forIndex += `
 		${item}: require("./${item}")(connection),`
@@ -65,7 +66,8 @@ module.exports = {
 	   * @param {${types[field.DATA_TYPE]}} ${field.COLUMN_NAME}`
 					paramsConstructorFunction += ','+field.COLUMN_NAME
 				}
-
+				if(enumFields != "") enumFields += "|"
+				enumFields +=`"${field.COLUMN_NAME}"`
 				fields += `
 			this.${field.COLUMN_NAME} = ${field.IS_NULLABLE == "NO" && field.EXTRA != "auto_increment" ? field.COLUMN_NAME : 'null' };`
 
@@ -83,8 +85,143 @@ module.exports = (connection) => {
 		}
 	}
 
+	/**
+	 * Select fields for query sending array of fields
+	 * @param {[(${enumFields})]} fields
+	 */
+	const select = (fields = []) => {
+		let result = "SELECT "
+		let whereStatement = "WHERE ";
+		let skipValue = 0;
+		let limitValue = 0;
+		if(fields && fields.length > 0){
+			fields.forEach(field=>{
+				result += field+", ";
+			})
+			result = result.slice(0, -2) + " ";
+		}else{
+			result += "* "
+		}
+
+		result += "FROM ${item} "
+
+		/**
+		 * Set skip value for query
+		 * @param {Number} a
+		 */
+		const skip = (a) => {
+			skipValue = a
+			return {
+				limit,
+				get
+			}
+		}
+		
+		/**
+		 * Set limit value for query
+		 * @param {Number} a
+		 */
+		const limit = (a) => {
+			limitValue = a
+			return {
+				get
+			}
+		}
+
+		/**
+		 * Set order field and type
+		 * @param {(${enumFields})} order
+		 * @param {("ASC"|"DESC")} type
+		 */
+		const orderBy = (order,type) => {
+			result += "ORDER BY " + order + " " + type + " "
+			return {
+				skip,
+				limit,
+				get
+			}
+		}
+
+		/**
+		 * Concatenate 'or' condition to where
+		 * @param {(${enumFields})} field
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {String} value
+		 */
+		const or = (field,operator,value) => { 
+			whereStatement = "OR "; 
+			return where(field,operator,value)
+		}
+		
+		/**
+		 * Concatenate 'and' condition to where
+		 * @param {(${enumFields})} field
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {String} value
+		 */
+		const and = (field,operator,value) => { 
+			whereStatement = "AND "; 
+			return where(field,operator,value)
+		}
+
+		/**
+		 * Create where condition to query
+		 * @param {(${enumFields})} field
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {String} value
+		 */
+		const where = (field,operator,value) => {
+			result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+			return {
+				or,
+				and,
+				orderBy,
+				skip,
+				limit,
+				get
+			}
+		}
+
+	/**
+	 * Return result of query, an array of objects
+	 * @return {Promise<[${item}]>} A promise ${item}.
+	 */
+		const get = () =>{
+			return new Promise((resolve)=>{
+				if(limitValue)
+					result += "LIMIT "+parseInt(skipValue || 0)+","+parseInt(limitValue)+ " "
+				console.log(result);
+				connection.query({
+						sql:result
+					},(err,results,fields)=>{
+						if(err)
+							resolve([]); 
+						else 
+							resolve(results);
+				});
+			})
+		}
+
+		return {
+			where,
+			orderBy,
+			get
+		} 
+	}
+
+	/**
+	 * Create an ${item} element but no insert
+	 * ${paramsConstructor}
+	 * 
+	 *
+	 * 
+	 * @returns {${item}}
+	 */
+	const make = (${paramsConstructorFunction.substr(1)}) => { return new ${item}(${paramsConstructorFunction.substr(1)}) }
+
 	return {
-		model: ${item}
+		make,
+		select
 	}
 
 }
