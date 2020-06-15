@@ -229,6 +229,81 @@ module.exports = (connection) => {
 		} 
 	}
 
+	const update = () => {
+		let result = "UPDATE ${item} SET "
+    let params = []
+		let whereStatement = "WHERE ";
+
+		/**
+		 * Concatenate 'or' condition to where
+		 * @param {(${enumFields})} field
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {String} value
+		 */
+		const or = (field,operator,value) => { 
+			whereStatement = "OR "; 
+			return where(field,operator,value)
+		}
+		
+		/**
+		 * Concatenate 'and' condition to where
+		 * @param {(${enumFields})} field
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {String} value
+		 */
+		const and = (field,operator,value) => { 
+			whereStatement = "AND "; 
+			return where(field,operator,value)
+		}
+
+		/**
+		 * Create where condition to query
+		 * @param {(${enumFields})} field
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {String} value
+		 */
+		const where = (field,operator,value) => {
+			result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+			return {
+				or,
+				and,
+				execute
+			}
+		}
+
+		/**
+		 * Create set value to query
+		 * @param {(${enumFields})} field
+		 * @param {String|Number|Date|Boolean} value
+		 */
+		const set = (field,value) => {
+			if(params.length != 0) result += ", "
+			result += field+" = ? ";
+			params.push(value)
+			return {
+				where,
+				set,
+				execute
+			}
+		}
+		
+	/**
+	 * Return result of query, an array of objects
+	 * @return {Promise<any>} A promise ${item}.
+	 */
+		const execute = () => {
+			return new Promise((resolve)=>{
+				connection.query(result, params ,(err,results,fields)=>{
+					err ? resolve(err) : resolve(results);
+				});
+			});
+		}
+
+		return {
+			set,
+		}
+	}
+
 	/**
 	 * Create an ${item} element but no insert
 	 * ${paramsConstructor}
@@ -241,7 +316,8 @@ module.exports = (connection) => {
 
 	return {
 		make,
-		select
+		select,
+		update
 	}
 
 }
