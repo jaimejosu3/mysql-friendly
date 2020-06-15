@@ -13,12 +13,6 @@ connection.connect(function(err) {
 		console.error('Error connecting: ' + err.stack);
 		return;
 	}
-
-	if(process.env.BUILD_MYSQL){
-		//require("./bin").buildModels(connection,process.env.DB_NAME)
-	}
- 
-	//console.log('MySQL Connected as id ' + connection.threadId);
 });
 
 const checkModels = () => {
@@ -36,5 +30,6 @@ const buildModels = () => {
 
 module.exports = {
 	buildModels: buildModels,
-	models: checkModels
+	models: checkModels,
+	connection :connection
 };
