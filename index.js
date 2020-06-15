@@ -1,5 +1,4 @@
 let mysql      = require('mysql');
-require('dotenv').config({ path: '/var/env/gymify/.env' })
 
 let connection = mysql.createConnection({
 	host: process.env.DB_HOST,
