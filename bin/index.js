@@ -77,7 +77,9 @@ module.exports = {
 			let paramsConstructor = ''
 			let fields = ''
 			let enumFields = ""
+			let insertFields = ""
 			let paramsConstructorFunction = ''
+			let primaryKey = ""
 			forIndex += `
 		${item}: require("./${item}")(connection),`
 			tables[item].forEach(field=>{
@@ -86,11 +88,12 @@ module.exports = {
 	   * @param {${types[field.DATA_TYPE]}} ${field.COLUMN_NAME}`
 					paramsConstructorFunction += ','+field.COLUMN_NAME
 				}
+				if(field.COLUMN_KEY == "PRI") primaryKey = field.COLUMN_NAME
 				if(enumFields != "") enumFields += "|"
 				enumFields +=`"${field.COLUMN_NAME}"`
 				fields += `
 			this.${field.COLUMN_NAME} = ${field.IS_NULLABLE == "NO" && field.EXTRA != "auto_increment" ? field.COLUMN_NAME : 'null' };`
-
+				insertFields += `${field.COLUMN_NAME}: this.${field.COLUMN_NAME},`
 			})
 			let fileContent = `
 module.exports = (connection) => {
@@ -102,6 +105,21 @@ module.exports = (connection) => {
 		 * 
 		 */
 		constructor(${paramsConstructorFunction.substr(1)}){${fields}
+		}
+
+		/**
+		 * Return result of INSERT, an object
+		 * @return {Promise<${item}>} A promise ${item}.
+		 */
+		insert(){
+			return new Promise((resolve,reject)=>{
+				connection.query('INSERT INTO ${item} SET ?' , {
+					${insertFields}
+				} ,(err,results,fields)=>{
+					this.${primaryKey} = results.insertId
+					err ? reject(err) : resolve(this);
+				});
+			})
 		}
 	}
 
@@ -282,8 +300,7 @@ module.exports = (connection) => {
 			params.push(value)
 			return {
 				where,
-				set,
-				execute
+				set
 			}
 		}
 		
