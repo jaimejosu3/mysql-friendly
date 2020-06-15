@@ -40,7 +40,11 @@ process.env.DB_NAME //database name
 
 Now you can run the command on any root of your project to build the models based on the database schema:
 ```bash
-$ node -e 'require("mysql-friendly").buildModels();'
+$ DB_HOST="<host>" \
+DB_USER="<username>" \
+DB_PASSWORD="<password>" \
+DB_NAME="<database_name>" \
+node -e 'require("mysql-friendly").buildModels();'
 ```
 
 Ready.
