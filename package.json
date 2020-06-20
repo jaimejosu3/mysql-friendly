@@ -13,5 +13,20 @@
     "dotenv": "^8.2.0",
     "fs": "0.0.1-security",
     "mysql": "^2.18.1"
-  }
+  },
+  "bin": {
+    "mysql-friendly": "bar.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaimejosu3/mysql-friendly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jaimejosu3/mysql-friendly/issues"
+  },
+  "homepage": "https://github.com/jaimejosu3/mysql-friendly#readme"
 }

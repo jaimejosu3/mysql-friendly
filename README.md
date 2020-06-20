@@ -65,7 +65,7 @@ async () => {
   let user = await models.users.select(["first_name","last_name"]).get();
   
   //select first_name from users where user_id = 1 or first_name like "%hon";
-  let user = await models.users.select(["first_name""]).where("user_id","=",1).or("first_name","LIKE","%hon").get();
+  let user = await models.users.select(["first_name"]).where("user_id","=",1).or("first_name","LIKE","%hon").get();
   
   //select * from users LIMIT 10,10;
   let user = await models.users.select().skip(10).limit(10).get();
