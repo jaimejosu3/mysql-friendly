@@ -74,6 +74,8 @@ module.exports = {
 		let forIndex = ''
 		Bar.init(Object.keys(tables).length);
 		await asyncForEach(Object.keys(tables),async (item) => {
+			let foreignFieldsObjects = await getRelationsFromTable(item);
+
 			let paramsConstructor = ''
 			let fields = ''
 			let enumFields = ""
@@ -243,7 +245,9 @@ module.exports = (connection) => {
 		return {
 			where,
 			orderBy,
-			get
+			get,
+			skip,
+			limit
 		} 
 	}
 
