@@ -230,7 +230,6 @@ module.exports = (connection) => {
 			return new Promise((resolve)=>{
 				if(limitValue)
 					result += "LIMIT "+parseInt(skipValue || 0)+","+parseInt(limitValue)+ " "
-				console.log(result);
 				connection.query({
 						sql:result
 					},(err,results,fields)=>{
