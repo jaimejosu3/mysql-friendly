@@ -1,5 +1,4 @@
 const fs = require('fs');
-const ProgressBar = require("./bar");
 
 const tables = {}
 const types = {
@@ -19,7 +18,6 @@ async function asyncForEach(array, callback) {
 
 module.exports = {
 	buildModels: async (connection,dbName) => {
-		const Bar = new ProgressBar();
 		let countTables = 0
 		let indexCreated = false;
 		const getAllFields = () => {
@@ -72,7 +70,7 @@ module.exports = {
 			}
 		});
 		let forIndex = ''
-		Bar.init(Object.keys(tables).length);
+		
 		await asyncForEach(Object.keys(tables),async (item) => {
 			let foreignFieldsObjects = await getRelationsFromTable(item);
 
@@ -407,7 +405,7 @@ module.exports = (connection) => {
 				countTables ++
 				//console.log('Created '+item+ ' model successfull.',countTables, Object.keys(tables).length, indexCreated);
 				if(countTables == Object.keys(tables).length && indexCreated){
-					Bar.update(countTables);
+					
 					console.log("Models created, import module and use your models.")
 					process.exit(1)
 				}
