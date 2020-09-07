@@ -425,7 +425,7 @@ ${forIndex}
 			indexCreated = true;
 			if(countTables == Object.keys(tables).length){
 				console.log("Models created, import module and use your models.")
-				process.exit(1);
+				process.exit(0);
 			}
 		});
 
