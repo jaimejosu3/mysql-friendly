@@ -397,7 +397,8 @@ module.exports = (connection) => {
 	return {
 		make,
 		select,
-		update
+		update,
+		remove
 	}
 
 }
