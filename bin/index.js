@@ -325,7 +325,7 @@ module.exports = (connection) => {
 		}
 	}
 
-	const delete = () => {
+	const remove = () => {
 		let result = "DELETE FROM ${item} "
     let params = []
 		let whereStatement = "WHERE ";
