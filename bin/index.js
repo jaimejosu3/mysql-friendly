@@ -325,6 +325,65 @@ module.exports = (connection) => {
 		}
 	}
 
+	const delete = () => {
+		let result = "DELETE FROM ${item} "
+    let params = []
+		let whereStatement = "WHERE ";
+
+		/**
+		 * Concatenate 'or' condition to where
+		 * @param {(${enumFields})} field
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {String} value
+		 */
+		const or = (field,operator,value) => { 
+			whereStatement = "OR "; 
+			return where(field,operator,value)
+		}
+		
+		/**
+		 * Concatenate 'and' condition to where
+		 * @param {(${enumFields})} field
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {String} value
+		 */
+		const and = (field,operator,value) => { 
+			whereStatement = "AND "; 
+			return where(field,operator,value)
+		}
+
+		/**
+		 * Create where condition to query
+		 * @param {(${enumFields})} field
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {String} value
+		 */
+		const where = (field,operator,value) => {
+			result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+			return {
+				or,
+				and,
+				execute
+			}
+		}
+		
+	/**
+	 * Return result of query, an array of objects
+	 * @return {Promise<any>} A promise ${item}.
+	 */
+		const execute = () => {
+			return new Promise((resolve)=>{
+				connection.query(result, params ,(err,results,fields)=>{
+					err ? resolve(err) : resolve(results);
+				});
+			});
+		}
+
+		return {
+			where
+		}
+	}
+
 	/**
 	 * Create an ${item} element but no insert
 	 * ${paramsConstructor}
