@@ -116,8 +116,12 @@ module.exports = (connection) => {
 				connection.query('INSERT INTO ${item} SET ?' , {
 					${insertFields}
 				} ,(err,results,fields)=>{
-					this.${primaryKey} = results.insertId
-					err ? reject(err) : resolve(this);
+					if(err){
+						reject(err)
+					}else{
+						this.${primaryKey} = results.insertId
+						resolve(this)
+					}
 				});
 			})
 		}
