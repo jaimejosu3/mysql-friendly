@@ -80,6 +80,7 @@ module.exports = {
 			let insertFields = ""
 			let paramsConstructorFunction = ''
 			let primaryKey = ""
+			let pointField = ""
 			forIndex += `
 		${item}: require("./${item}")(connection),`
 			tables[item].forEach(field=>{
@@ -93,7 +94,11 @@ module.exports = {
 				enumFields +=`"${field.COLUMN_NAME}"`
 				fields += `
 			this.${field.COLUMN_NAME} = ${field.IS_NULLABLE == "NO" && field.EXTRA != "auto_increment" ? field.COLUMN_NAME : 'null' };`
-				insertFields += `${field.COLUMN_NAME}: this.${field.COLUMN_NAME},`
+				if(field.DATA_TYPE != "point") {
+					insertFields += `${field.COLUMN_NAME}: this.${field.COLUMN_NAME},`
+				}else{
+					pointField = field.COLUMN_NAME
+				}
 			})
 			let fileContent = `
 module.exports = (connection) => {
@@ -113,7 +118,7 @@ module.exports = (connection) => {
 		 */
 		insert(){
 			return new Promise((resolve,reject)=>{
-				connection.query('INSERT INTO ${item} SET ?' , {
+				connection.query('INSERT INTO ${item} SET ? ${pointField != "" ? `, \`${pointField}\` = POINT(\${this.${pointField}.lat},\${this.${pointField}.long})`: ''}' , {
 					${insertFields}
 				} ,(err,results,fields)=>{
 					if(err){
