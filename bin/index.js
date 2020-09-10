@@ -118,7 +118,7 @@ module.exports = (connection) => {
 		 */
 		insert(){
 			return new Promise((resolve,reject)=>{
-				connection.query('INSERT INTO ${item} SET ? ${pointField != "" ? `, \`${pointField}\` = POINT(\${this.${pointField}.lat},\${this.${pointField}.long})`: ''}' , {
+				connection.query('INSERT INTO ${item} SET ? ${pointField != "" ? `, \`${pointField}\` = POINT('+${pointField}.lat+','+this.${pointField}.long+')`: ''}' , {
 					${insertFields}
 				} ,(err,results,fields)=>{
 					if(err){
