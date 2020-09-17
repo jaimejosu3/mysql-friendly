@@ -116,9 +116,9 @@ module.exports = (connection) => {
 		 * Return result of INSERT, an object
 		 * @return {Promise<${item}>} A promise ${item}.
 		 */
-		insert(){
+		insert(ignoreDuplicate){
 			return new Promise((resolve,reject)=>{
-				connection.query('INSERT INTO ${item} SET ? ${pointField != "" ? `, \`${pointField}\` = POINT('+this.${pointField}.lat+','+this.${pointField}.long+');`: ''}' , {
+				connection.query('INSERT  \`${'ignoreDuplicate ? IGNORE : \'\''}\` INTO ${item} SET ? ${pointField != "" ? `, \`${pointField}\` = POINT('+this.${pointField}.lat+','+this.${pointField}.long+');`: ''}' , {
 					${insertFields}
 				} ,(err,results,fields)=>{
 					if(err){
