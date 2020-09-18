@@ -81,9 +81,11 @@ module.exports = {
 			let paramsConstructorFunction = ''
 			let primaryKey = ""
 			let pointField = ""
+			let allFields = []
 			forIndex += `
 		${item}: require("./${item}")(connection),`
 			tables[item].forEach(field=>{
+				allFields.push(field.COLUMN_NAME)
 				if(field.IS_NULLABLE == "NO" && field.EXTRA != "auto_increment"){
 					paramsConstructor += `
 	   * @param {${types[field.DATA_TYPE]}} ${field.COLUMN_NAME}`
@@ -399,6 +401,21 @@ module.exports = (connection) => {
 	 * @returns {${item}}
 	 */
 	const make = (${paramsConstructorFunction.substr(1)}) => { return new ${item}(${paramsConstructorFunction.substr(1)}) }
+
+	const insertMany = (array,ignoreDuplicate) => {
+		return new Promise((resolve,reject)=>{
+			array = array.map(e=>{
+				return [e.${allFields.join(",e.")}]
+			})
+			connection.query('INSERT ' + (ignoreDuplicate ? 'IGNORE' : '') +' INTO tags (${allFields.join(",")}) VALUES ? ' , [array] ,(err,results,fields)=>{
+				if(err){
+					reject(err)
+				}else{
+					resolve(results)
+				}
+			});
+		})
+	}
 
 	return {
 		make,
