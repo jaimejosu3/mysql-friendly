@@ -407,7 +407,7 @@ module.exports = (connection) => {
 			array = array.map(e=>{
 				return [e.${allFields.join(",e.")}]
 			})
-			connection.query('INSERT ' + (ignoreDuplicate ? 'IGNORE' : '') +' INTO tags (${allFields.join(",")}) VALUES ? ' , [array] ,(err,results,fields)=>{
+			connection.query('INSERT ' + (ignoreDuplicate ? 'IGNORE' : '') +' INTO ${item} (${allFields.join(",")}) VALUES ? ' , [array] ,(err,results,fields)=>{
 				if(err){
 					reject(err)
 				}else{
