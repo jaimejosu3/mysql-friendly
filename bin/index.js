@@ -421,7 +421,8 @@ module.exports = (connection) => {
 		make,
 		select,
 		update,
-		remove
+		remove,
+		insertMany
 	}
 
 }
