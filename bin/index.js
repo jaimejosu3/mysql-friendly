@@ -220,7 +220,18 @@ module.exports = (connection) => {
 		 * @param {String} value
 		 */
 		const where = (field,operator,value) => {
-			result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+			switch (typeof(value)) {
+			case "boolean":
+				result += whereStatement + " " + field + " " + operator + " " + value +" "
+				break;
+			case "undefined":
+				result += whereStatement + " " + field + " " + operator + " NULL "
+				break;
+
+			default:
+				result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+				break;
+		}
 			return {
 				or,
 				and,
@@ -293,7 +304,18 @@ module.exports = (connection) => {
 		 * @param {String} value
 		 */
 		const where = (field,operator,value) => {
-			result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+			switch (typeof(value)) {
+			case "boolean":
+				result += whereStatement + " " + field + " " + operator + " " + value +" "
+				break;
+			case "undefined":
+				result += whereStatement + " " + field + " " + operator + " NULL "
+				break;
+
+			default:
+				result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+				break;
+		}
 			return {
 				or,
 				and,
@@ -367,7 +389,18 @@ module.exports = (connection) => {
 		 * @param {String} value
 		 */
 		const where = (field,operator,value) => {
-			result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+			switch (typeof(value)) {
+			case "boolean":
+				result += whereStatement + " " + field + " " + operator + " " + value +" "
+				break;
+			case "undefined":
+				result += whereStatement + " " + field + " " + operator + " NULL "
+				break;
+
+			default:
+				result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+				break;
+		}
 			return {
 				or,
 				and,
