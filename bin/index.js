@@ -194,7 +194,7 @@ module.exports = (connection) => {
 		/**
 		 * Concatenate 'or' condition to where
 		 * @param {(${enumFields})} field
-		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE"|"IN")} operator
 		 * @param {String} value
 		 */
 		const or = (field,operator,value) => { 
@@ -205,7 +205,7 @@ module.exports = (connection) => {
 		/**
 		 * Concatenate 'and' condition to where
 		 * @param {(${enumFields})} field
-		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE"|"IN")} operator
 		 * @param {String} value
 		 */
 		const and = (field,operator,value) => { 
@@ -216,7 +216,7 @@ module.exports = (connection) => {
 		/**
 		 * Create where condition to query
 		 * @param {(${enumFields})} field
-		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE"|"IN")} operator
 		 * @param {String} value
 		 */
 		const where = (field,operator,value) => {
@@ -229,7 +229,10 @@ module.exports = (connection) => {
 				break;
 
 			default:
-				result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+				if(Array.isArray(value))
+					result += whereStatement + " " + field + " " + operator + " " + JSON.stringify(value) +" "
+				else
+					result += whereStatement + " " + field + " " + operator + " '" + value +"' "
 				break;
 		}
 			return {
@@ -278,7 +281,7 @@ module.exports = (connection) => {
 		/**
 		 * Concatenate 'or' condition to where
 		 * @param {(${enumFields})} field
-		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE"|"IN")} operator
 		 * @param {String} value
 		 */
 		const or = (field,operator,value) => { 
@@ -289,7 +292,7 @@ module.exports = (connection) => {
 		/**
 		 * Concatenate 'and' condition to where
 		 * @param {(${enumFields})} field
-		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE"|"IN")} operator
 		 * @param {String} value
 		 */
 		const and = (field,operator,value) => { 
@@ -300,7 +303,7 @@ module.exports = (connection) => {
 		/**
 		 * Create where condition to query
 		 * @param {(${enumFields})} field
-		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE"|"IN")} operator
 		 * @param {String} value
 		 */
 		const where = (field,operator,value) => {
@@ -313,7 +316,10 @@ module.exports = (connection) => {
 				break;
 
 			default:
-				result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+				if(Array.isArray(value))
+					result += whereStatement + " " + field + " " + operator + " " + JSON.stringify(value) +" "
+				else
+					result += whereStatement + " " + field + " " + operator + " '" + value +"' "
 				break;
 		}
 			return {
@@ -363,7 +369,7 @@ module.exports = (connection) => {
 		/**
 		 * Concatenate 'or' condition to where
 		 * @param {(${enumFields})} field
-		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE"|"IN")} operator
 		 * @param {String} value
 		 */
 		const or = (field,operator,value) => { 
@@ -374,7 +380,7 @@ module.exports = (connection) => {
 		/**
 		 * Concatenate 'and' condition to where
 		 * @param {(${enumFields})} field
-		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE"|"IN")} operator
 		 * @param {String} value
 		 */
 		const and = (field,operator,value) => { 
@@ -385,7 +391,7 @@ module.exports = (connection) => {
 		/**
 		 * Create where condition to query
 		 * @param {(${enumFields})} field
-		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE")} operator
+		 * @param {("="|"!="|">"|">="|"<"|"<="|"LIKE"|"IN")} operator
 		 * @param {String} value
 		 */
 		const where = (field,operator,value) => {
@@ -396,9 +402,11 @@ module.exports = (connection) => {
 			case "undefined":
 				result += whereStatement + " " + field + " " + operator + " NULL "
 				break;
-
 			default:
-				result += whereStatement + " " + field + " " + operator + " '" + value +"' "
+				if(Array.isArray(value))
+					result += whereStatement + " " + field + " " + operator + " " + JSON.stringify(value) +" "
+				else
+					result += whereStatement + " " + field + " " + operator + " '" + value +"' "
 				break;
 		}
 			return {
