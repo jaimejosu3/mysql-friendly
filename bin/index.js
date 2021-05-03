@@ -22,7 +22,7 @@ module.exports = {
 		let indexCreated = false;
 		const getAllFields = () => {
 			return new Promise(resolve => {
-				connection.query('SELECT * FROM information_schema.columns WHERE table_schema =  ? ',dbName , (err, result) => {
+				connection.query('SELECT * FROM information_schema.columns WHERE table_schema =  ? order by ORDINAL_POSITION asc',dbName , (err, result) => {
 					if(err) 
 							resolve({error: "error on mysql", info: err})
 					else

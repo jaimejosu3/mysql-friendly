@@ -1,6 +1,6 @@
 {
   "name": "mysql-friendly",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "mysql module friendly use",
   "main": "index.js",
   "scripts": {
