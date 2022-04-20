@@ -1,5 +1,5 @@
 let mysql      = require('mysql');
-require('dotenv').config({ path: process.env.ENV_PATH || '/var/env/market.env' })
+require('dotenv').config()
 
 let connection = mysql.createConnection({
 	host: process.env.DB_HOST,
