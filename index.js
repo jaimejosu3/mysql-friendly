@@ -22,7 +22,7 @@ function handleError () {
         console.log('db error', err);
         // If the connection is disconnected, automatically reconnect
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-            handleError();
+            process.exit(1)
         } else {
             throw err;
         }
